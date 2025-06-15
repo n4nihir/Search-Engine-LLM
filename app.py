@@ -5,11 +5,6 @@ from langchain_community.tools import ArxivQueryRun, WikipediaQueryRun, DuckDuck
 from langchain.agents import initialize_agent, AgentType
 from langchain.callbacks import StreamlitCallbackHandler
 
-import os
-from dotenv import load_dotenv
-
-load_dotenv()
-groq_api_key = os.getenv("GROQ_API_KEY")
 
 ##Arxiv and Wikipedia Tools
 arxiv_wrapper = ArxivAPIWrapper(top_k_results=1, doc_content_chars_max=200)
@@ -27,6 +22,8 @@ In this example, we're using 'StreamlitCallbackHandler' to display the thoughts 
 Try more LangChain 🤝 Streamlit Agent examples at [github.com/langchain-ai/streamlit-agent](https://github.com/langchain-ai/streamlit-agent).
 """
 
+groq_api_key = st.sidebar.text_input("Enter Groq API Key", type="password")
+
 if "messages" not in st.session_state:
     st.session_state["messages"]=[
         {
@@ -38,7 +35,7 @@ if "messages" not in st.session_state:
 for msg in st.session_state.messages:
     st.chat_message(msg["role"]).write(msg["content"])
 
-if prompt:=st.chat_input(placeholder="What is machine learning?"):
+if prompt:=st.chat_input(placeholder="What is machine learning?") and groq_api_key:
     st.session_state.messages.append({"role":"user","content":prompt})
     st.chat_message("user").write(prompt)
 
